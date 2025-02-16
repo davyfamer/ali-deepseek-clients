@@ -1,0 +1,58 @@
+.chat-history {
+  padding: 24px 16px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.history-card {
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 100px;
+}
+
+.history-card.selected {
+  border-color: #1890ff;
+  background-color: #e6f7ff;
+}
+
+.history-title {
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.history-preview {
+  margin-bottom: 8px;
+  color: #8c8c8c;
+}
+
+.history-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #8c8c8c;
+  font-size: 12px;
+}
+
+.history-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.history-icon {
+  display: flex;
+  align-items: center;
+}
+
+.ant-card-body {
+  padding: 12px !important;
+}
+
+.ant-spin-nested-loading {
+  width: 100%;
+}
+
+.ant-card-body .ant-spin-nested-loading {
+  min-height: 80px;
+} 
