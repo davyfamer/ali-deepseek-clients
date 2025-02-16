@@ -440,4 +440,76 @@ button:disabled {
 .message.user .message-header {
   padding: 8px;
   border-radius: 12px;
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .chat-layout {
+    height: 100vh; /* 移动端使用全屏高度 */
+  }
+
+  .chat-sider {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+    background: white;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .chat-sider.visible {
+    transform: translateX(0);
+  }
+
+  .chat-main {
+    margin-left: 0 !important; /* 覆盖 antd 默认样式 */
+  }
+
+  .message {
+    max-width: 90%; /* 移动端消息气泡宽度更大 */
+  }
+
+  .input-area {
+    padding: 12px;
+    margin-top: 12px;
+  }
+
+  .button-group {
+    padding: 8px 0;
+  }
+
+  /* 添加历史记录切换按钮 */
+  .history-toggle {
+    position: fixed;
+    left: 8px;
+    top: 8px;
+    z-index: 1001;
+    background: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+  }
+
+  /* 添加遮罩层 */
+  .history-mask {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 999;
+  }
+
+  .history-mask.visible {
+    display: block;
+  }
 } 

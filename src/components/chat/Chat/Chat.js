@@ -1,6 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Layout, Input, Button, Avatar, Typography } from 'antd';
-import { SendOutlined, UploadOutlined, UserOutlined, RobotOutlined } from '@ant-design/icons';
+import { 
+  SendOutlined, 
+  UploadOutlined, 
+  UserOutlined, 
+  RobotOutlined,
+  MenuOutlined,
+  CloseOutlined
+} from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import axios from 'axios';
@@ -22,6 +29,8 @@ const Chat = ({ user }) => {
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const [currentSessionId, setCurrentSessionId] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [siderVisible, setSiderVisible] = useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -57,6 +66,28 @@ const Chat = ({ user }) => {
     scrollToBottom();
     fetchChatHistory();
   }, [messages, user, fetchChatHistory]);
+
+  // 检测是否为移动设备
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // 处理历史记录面板的显示/隐藏
+  const toggleSider = () => {
+    setSiderVisible(!siderVisible);
+  };
+
+  // 关闭历史记录面板
+  const closeSider = () => {
+    setSiderVisible(false);
+  };
 
   const groupChatHistory = (history) => {
     // 按日期分组
@@ -285,14 +316,38 @@ const Chat = ({ user }) => {
 
   return (
     <Layout className="chat-layout">
-      <Sider width={300} theme="light" className="chat-sider">
+      {isMobile && (
+        <div 
+          className="history-toggle" 
+          onClick={toggleSider}
+        >
+          {siderVisible ? <CloseOutlined /> : <MenuOutlined />}
+        </div>
+      )}
+      
+      {isMobile && (
+        <div 
+          className={`history-mask ${siderVisible ? 'visible' : ''}`}
+          onClick={closeSider}
+        />
+      )}
+
+      <Sider 
+        width={300} 
+        theme="light" 
+        className={`chat-sider ${siderVisible ? 'visible' : ''}`}
+      >
         <ChatHistory 
           user={user}
           onSelectChat={(messages, sessionId) => {
             handleHistorySelect(messages, sessionId);
+            if (isMobile) {
+              closeSider();
+            }
           }}
         />
       </Sider>
+
       <Layout className="chat-main">
         <Content className="chat-content">
           <div className="messages">
@@ -360,12 +415,12 @@ const Chat = ({ user }) => {
               placeholder={selectedFile ? "请输入您对文件内容的问题..." : "输入您的问题..."}
               disabled={isLoading}
               onPressEnter={(e) => {
-                if (!e.shiftKey) {
+                if (!e.shiftKey && !isMobile) { // 在移动端禁用回车发送
                   e.preventDefault();
                   handleSubmit(e);
                 }
               }}
-              autoSize={{ minRows: 2, maxRows: 6 }}
+              autoSize={{ minRows: 2, maxRows: isMobile ? 4 : 6 }}
             />
             <div className="button-group">
               <input
@@ -380,7 +435,7 @@ const Chat = ({ user }) => {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading}
               >
-                {selectedFile ? '更换文件' : '上传文件'}
+                {isMobile ? '' : (selectedFile ? '更换文件' : '上传文件')}
               </Button>
               <Button
                 type="primary"
@@ -388,7 +443,7 @@ const Chat = ({ user }) => {
                 onClick={handleSubmit}
                 disabled={isLoading}
               >
-                发送
+                {isMobile ? '' : '发送'}
               </Button>
             </div>
           </div>
