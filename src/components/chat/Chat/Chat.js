@@ -31,6 +31,7 @@ const Chat = ({ user }) => {
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [siderVisible, setSiderVisible] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -127,6 +128,7 @@ const Chat = ({ user }) => {
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
+    setIsSending(true);
 
     try {
       const requestBody = {
@@ -231,6 +233,7 @@ const Chat = ({ user }) => {
     } finally {
       setIsTyping(false);
       setIsLoading(false);
+      setIsSending(false);
     }
   };
 
@@ -399,6 +402,15 @@ const Chat = ({ user }) => {
                 </div>
               </div>
             ))}
+            
+            {isSending && (
+              <div className="sending-indicator">
+                <div className="sending-wave"></div>
+                <div className="sending-wave"></div>
+                <div className="sending-wave"></div>
+              </div>
+            )}
+            
             {isTyping && (
               <div className="typing-indicator">
                 <div className="typing-dot"></div>
@@ -406,6 +418,7 @@ const Chat = ({ user }) => {
                 <div className="typing-dot"></div>
               </div>
             )}
+            
             <div ref={messagesEndRef} />
           </div>
           <div className="input-area">
